@@ -5,4 +5,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// enables printing VM instructions right before executing them
+#define DEBUG_TRACE_EXECUTION
+
 #endif
