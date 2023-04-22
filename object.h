@@ -17,6 +17,7 @@ typedef enum {
 
 struct Obj {
   ObjType type;
+  struct Obj* next; // linked list
 };
 
 /*
@@ -31,12 +32,13 @@ struct ObjString {
   char* chars;
 };
 
+ObjString* takeString(char* chars, int length);
 ObjString* copyString(const char*  chars, int length);
 void printObject(Value value);
 
 // must be separate because the body uses "value" twice. A macro is expanded by inserting the argument expression
 // every place the parameter name appears in the body. We don't want to risk evaluating the expression multiple times.
-static inline bool isObjType(Value value, ObjType type) {
+static inline bool isObjectType(Value value, ObjType type) {
   return IS_OBJ(value) && AS_OBJ(value)->type == type;
 }
 
