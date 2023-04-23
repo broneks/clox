@@ -30,6 +30,7 @@ struct ObjString {
   Obj obj; // pseudo-inheritance / base class
   int length;
   char* chars;
+  uint32_t hash;
 };
 
 ObjString* takeString(char* chars, int length);
