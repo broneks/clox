@@ -11,6 +11,8 @@
 
 VM vm;
 
+// hello Stephen
+
 static void resetStack() {
   vm.stackTop = vm.stack;
   vm.objects = NULL;
