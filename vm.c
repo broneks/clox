@@ -12,8 +12,6 @@
 
 VM vm;
 
-// hello Stephen
-
 static void resetStack() {
   vm.stackTop = vm.stack;
 }
@@ -186,7 +184,7 @@ static InterpretResult run() {
       }
 
       case OP_RETURN: {
-        break; // TODO
+        return INTERPRET_OK;
       }
     }
   }
