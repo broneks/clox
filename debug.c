@@ -1,17 +1,23 @@
 #include <stdio.h>
 
+#include "color.h"
 #include "chunk.h"
 #include "debug.h"
 #include "value.h"
 
 static int simpleInstruction(const char* name, int offset) {
+  COLOR_BLUE();
   printf("%s\n", name);
+  COLOR_RESET();
   return offset + 1;
 }
 
 static int constantInstruction(const char* name, Chunk* chunk, int offset) {
   uint8_t constant = chunk->code[offset + 1];
-  printf("%-16s %4d '", name, constant);
+  COLOR_BLUE();
+  printf("%-16s", name);
+  COLOR_RESET();
+  printf(" %4d '", constant);
   printValue(chunk->constants.values[constant]);
   printf("'\n");
   return offset + 2;
