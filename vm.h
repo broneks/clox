@@ -12,7 +12,8 @@ typedef struct {
   uint8_t* ip; // instruction pointer
   Value stack[STACK_MAX];
   Value* stackTop;
-  Table strings;
+  Table globals; // global variables
+  Table strings; // interned strings (deduped)
   Obj* objects;
 } VM;
 

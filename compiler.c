@@ -142,6 +142,7 @@ static void statement();
 static void declaration();
 static ParseRule* getRule(TokenType type);
 static void parsePrecedence(Precedence precedence);
+static uint8_t identifierConstant(Token* name);
 
 static void binary() {
   TokenType operatorType = parser.previous.type;
@@ -187,6 +188,15 @@ static void string() {
   emitConstant(OBJ_VAL(copyString(parser.previous.start + 1, parser.previous.length - 2)));
 }
 
+static void namedVariable(Token name) {
+  uint8_t arg = identifierConstant(&name);
+  emitBytes(OP_GET_GLOBAL, arg);
+}
+
+static void variable() {
+  namedVariable(parser.previous);
+}
+
 static void unary() {
   TokenType operatorType = parser.previous.type;
 
@@ -221,7 +231,7 @@ ParseRule rules[] = {
   [TOKEN_GREATER_EQUAL]  = {NULL,     binary, PREC_COMPARISON},
   [TOKEN_LESS]           = {NULL,     binary, PREC_COMPARISON},
   [TOKEN_LESS_EQUAL]     = {NULL,     binary, PREC_COMPARISON},
-  [TOKEN_IDENTIFIER]     = {NULL,     NULL,   PREC_NONE},
+  [TOKEN_IDENTIFIER]     = {variable, NULL,   PREC_NONE},
   [TOKEN_STRING]         = {string,   NULL,   PREC_NONE},
   [TOKEN_NUMBER]         = {number,   NULL,   PREC_NONE},
   [TOKEN_AND]            = {NULL,     NULL,   PREC_NONE},
@@ -334,7 +344,7 @@ static void synchronize() {
 
 static void declaration() {
   if (match(TOKEN_VAR)) {
-
+    varDeclaration();
   } else {
     statement();
   }
