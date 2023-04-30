@@ -7,12 +7,12 @@
 #include "debug.h"
 #include "vm.h"
 
-#define forever for (;;)
+#define FOREVER for (;;)
 
 static void repl() {
   char line[1024];
 
-  forever {
+  FOREVER {
     printf("> ");
 
     if (!fgets(line, sizeof(line), stdin)) {
