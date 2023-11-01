@@ -608,7 +608,7 @@ static void statement() {
     printStatement();
   } else if (match(TOKEN_FOR)) {
     forStatement();
-  } if (match(TOKEN_IF)) {
+  } else if (match(TOKEN_IF)) {
     ifStatement();
   } else if (match(TOKEN_WHILE)) {
     whileStatement();
