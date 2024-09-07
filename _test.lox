@@ -1,15 +1,7 @@
-var name = "Bob";
-
-print("Hello " + name + "!"); // Hello Bob!
-
-var a = 1;
-
-var b = 2;
-
-print(a + b);
-
-fun foo() {
-  // TODO
+fun a() { b(); }
+fun b() { c(); }
+fun c() {
+  c("too", "many");
 }
 
-print foo;
+a();
