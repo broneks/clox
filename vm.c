@@ -1,6 +1,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #include "chunk.h"
 #include "common.h"
@@ -11,6 +12,10 @@
 #include "vm.h"
 
 VM vm;
+
+static Value clockNative(int argCount, Value* args) {
+  return NUMBER_VAL((double)clock() / CLOCKS_PER_SEC);
+}
 
 static void resetStack() {
   vm.stackTop = vm.stack;
@@ -45,12 +50,22 @@ static void runtimeError(const char *format, ...) {
   resetStack();
 }
 
+static void defineNative(const char* name, NativeFn function) {
+  push(OBJ_VAL(copyString(name, (int)strlen(name))));
+  push(OBJ_VAL(newNative(function)));
+  tableSet(&vm.globals, AS_STRING(vm.stack[0]), vm.stack[1]);
+  pop();
+  pop();
+}
+
 void initVM() {
   resetStack();
   vm.objects = NULL;
 
   initTable(&vm.globals);
   initTable(&vm.strings);
+
+  defineNative("clock", clockNative);
 }
 
 void freeVM() {
@@ -94,6 +109,13 @@ static bool callValue(Value callee, int argCount) {
     switch (OBJ_TYPE(callee)) {
       case OBJ_FUNCTION:
         return call(AS_FUNCTION(callee), argCount);
+      case OBJ_NATIVE: {
+        NativeFn native = AS_NATIVE(callee);
+        Value result = native(argCount, vm.stackTop - argCount);
+        vm.stackTop -= argCount + 1;
+        push(result);
+        return true;
+      }
       default:
         break; // Non-callable object type.
     }
@@ -307,7 +329,17 @@ static InterpretResult run() {
     }
 
     case OP_RETURN: {
-      return INTERPRET_OK;
+      Value result = pop();
+      vm.frameCount--;
+      if (vm.frameCount == 0) {
+        pop();
+        return INTERPRET_OK;
+      }
+
+      vm.stackTop = frame->slots;
+      push(result);
+      frame = &vm.frames[vm.frameCount - 1];
+      break;
     }
     }
   }
