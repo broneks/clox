@@ -21,6 +21,7 @@ typedef struct {
   Value* stackTop;
   Table globals; // global variables
   Table strings; // interned strings (deduped)
+  ObjUpvalue* openUpvalues;
   Obj* objects;
 } VM;
 
