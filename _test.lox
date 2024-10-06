@@ -1,8 +1,14 @@
-fun fib(n) {
-  if (n < 2) return n;
-  return fib(n - 2) + fib(n - 1);
+fun outer() {
+  var a = 1;
+  var b = 2;
+  fun middle() {
+    var c = 3;
+    var d = 4;
+    fun inner() {
+      print a + c + b + d;
+    }
+    inner();
+  }
+  middle();
 }
-
-var start = clock();
-print fib(21);
-print clock() - start;
+outer();
