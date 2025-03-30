@@ -22,7 +22,12 @@ typedef struct {
   Table globals; // global variables
   Table strings; // interned strings (deduped)
   ObjUpvalue* openUpvalues;
+  size_t bytesAllocated;
+  size_t nextGC; // threshold that triggers the next collection
   Obj* objects;
+  int grayCount;
+  int grayCapacity;
+  Obj** grayStack;
 } VM;
 
 typedef enum {
